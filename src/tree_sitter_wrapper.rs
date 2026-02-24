@@ -167,6 +167,7 @@ fn extract_fn_kind(node: &tree_sitter::Node, source: &str) -> (RtFnKind, bool) {
 }
 
 /// Extract doc comment text from preceding siblings (/// comments).
+/// Handles both direct line_comment siblings and attribute_item nodes.
 fn extract_doc_comment(node: &tree_sitter::Node, source: &str) -> Option<String> {
     let mut comments = Vec::new();
     let mut prev = node.prev_sibling();
@@ -180,8 +181,37 @@ fn extract_doc_comment(node: &tree_sitter::Node, source: &str) -> Option<String>
                 prev = sibling.prev_sibling();
                 continue;
             }
+        } else if sibling.kind() == "attribute_item" {
+            // Skip attributes like #[verifier::external] between doc comment and function
+            prev = sibling.prev_sibling();
+            continue;
         }
         break;
+    }
+
+    // If no doc comments found via siblings, try looking at the source text
+    // directly above the function (handles cases where tree-sitter extras
+    // aren't proper siblings)
+    if comments.is_empty() {
+        let start_byte = node.start_byte();
+        let before = &source[..start_byte];
+        let lines: Vec<&str> = before.lines().collect();
+
+        // Walk backwards through preceding lines
+        let mut i = lines.len();
+        while i > 0 {
+            i -= 1;
+            let line = lines[i].trim();
+            if line.starts_with("///") {
+                let doc_text = line.trim_start_matches("///").trim();
+                comments.push(doc_text.to_string());
+            } else if line.is_empty() || line.starts_with("#[") {
+                // Skip blank lines and attributes
+                continue;
+            } else {
+                break;
+            }
+        }
     }
 
     if comments.is_empty() {
