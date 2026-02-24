@@ -61,8 +61,10 @@ fn format_item(md: &mut String, item: &RtDocItem, src_prefix: &str) {
     let open_str = if item.is_open { "open " } else { "" };
     let kind_str = item.kind.as_str();
 
-    let link = format!("{}{file}#L{line}",
+    let sep = if src_prefix.is_empty() || src_prefix.ends_with('/') { "" } else { "/" };
+    let link = format!("{}{sep}{file}#L{line}",
         src_prefix,
+        sep = sep,
         file = item.file_path,
         line = item.line_number,
     );
