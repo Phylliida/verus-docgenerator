@@ -1,7 +1,7 @@
 use crate::doc_item::*;
 
-/// Generate a markdown document from the documentation output.
-/// `src_prefix` is prepended to file paths to form links, e.g. `./src/`.
+///  Generate a markdown document from the documentation output.
+///  `src_prefix` is prepended to file paths to form links, e.g. `./src/`.
 pub fn format_doc_output(output: &RtDocOutput, src_prefix: &str) -> String {
     let mut md = String::new();
 
@@ -11,7 +11,7 @@ pub fn format_doc_output(output: &RtDocOutput, src_prefix: &str) -> String {
     for module in &output.modules {
         md.push_str(&format!("## `{}`\n\n", module.path));
 
-        // Group items by kind within each module
+        //  Group items by kind within each module
         let spec_items: Vec<&RtDocItem> = module
             .items
             .iter()
@@ -56,7 +56,7 @@ pub fn format_doc_output(output: &RtDocOutput, src_prefix: &str) -> String {
     md
 }
 
-/// Format a single documentation item as a markdown list entry with a clickable link.
+///  Format a single documentation item as a markdown list entry with a clickable link.
 fn format_item(md: &mut String, item: &RtDocItem, src_prefix: &str) {
     let open_str = if item.is_open { "open " } else { "" };
     let kind_str = item.kind.as_str();
