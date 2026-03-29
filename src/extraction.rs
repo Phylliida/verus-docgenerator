@@ -3,8 +3,8 @@ use crate::doc_item::*;
 
 verus! {
 
-/// Filters a sequence to keep only Public items.
-/// Proves: all output items are public, output is no longer than input.
+///  Filters a sequence to keep only Public items.
+///  Proves: all output items are public, output is no longer than input.
 pub open spec fn filter_public_spec(items: Seq<DocItem>) -> Seq<DocItem>
     decreases items.len(),
 {
@@ -20,7 +20,7 @@ pub open spec fn filter_public_spec(items: Seq<DocItem>) -> Seq<DocItem>
     }
 }
 
-/// All items in the filtered result are public.
+///  All items in the filtered result are public.
 pub proof fn lemma_filter_public_all_public(items: Seq<DocItem>)
     ensures
         all_items_public(filter_public_spec(items)),
@@ -31,7 +31,7 @@ pub proof fn lemma_filter_public_all_public(items: Seq<DocItem>)
     }
 }
 
-/// The filtered result is no longer than the input.
+///  The filtered result is no longer than the input.
 pub proof fn lemma_filter_public_length(items: Seq<DocItem>)
     ensures
         filter_public_spec(items).len() <= items.len(),
@@ -42,8 +42,8 @@ pub proof fn lemma_filter_public_length(items: Seq<DocItem>)
     }
 }
 
-/// Insertion sort by line number (spec).
-/// Proves: output is sorted by line number.
+///  Insertion sort by line number (spec).
+///  Proves: output is sorted by line number.
 pub open spec fn sort_by_line_spec(items: Seq<DocItem>) -> Seq<DocItem>
     decreases items.len(),
 {
@@ -54,7 +54,7 @@ pub open spec fn sort_by_line_spec(items: Seq<DocItem>) -> Seq<DocItem>
     }
 }
 
-/// Insert an item into a line-sorted sequence maintaining sort order.
+///  Insert an item into a line-sorted sequence maintaining sort order.
 pub open spec fn insert_sorted_by_line(item: DocItem, sorted: Seq<DocItem>) -> Seq<DocItem>
     decreases sorted.len(),
 {
@@ -67,7 +67,7 @@ pub open spec fn insert_sorted_by_line(item: DocItem, sorted: Seq<DocItem>) -> S
     }
 }
 
-/// sort_by_line_spec preserves length.
+///  sort_by_line_spec preserves length.
 pub proof fn lemma_sort_by_line_length(items: Seq<DocItem>)
     ensures
         sort_by_line_spec(items).len() == items.len(),
@@ -79,7 +79,7 @@ pub proof fn lemma_sort_by_line_length(items: Seq<DocItem>)
     }
 }
 
-/// insert_sorted_by_line increases length by exactly 1.
+///  insert_sorted_by_line increases length by exactly 1.
 pub proof fn lemma_insert_sorted_length(item: DocItem, sorted: Seq<DocItem>)
     ensures
         insert_sorted_by_line(item, sorted).len() == sorted.len() + 1,
@@ -90,7 +90,7 @@ pub proof fn lemma_insert_sorted_length(item: DocItem, sorted: Seq<DocItem>)
     }
 }
 
-/// sort_by_line_spec produces a sorted sequence.
+///  sort_by_line_spec produces a sorted sequence.
 pub proof fn lemma_sort_by_line_sorted(items: Seq<DocItem>)
     ensures
         items_sorted_by_line(sort_by_line_spec(items)),
@@ -102,7 +102,7 @@ pub proof fn lemma_sort_by_line_sorted(items: Seq<DocItem>)
     }
 }
 
-/// Inserting into a sorted sequence preserves sort order.
+///  Inserting into a sorted sequence preserves sort order.
 pub proof fn lemma_insert_preserves_sorted(item: DocItem, sorted: Seq<DocItem>)
     requires
         items_sorted_by_line(sorted),
@@ -115,7 +115,7 @@ pub proof fn lemma_insert_preserves_sorted(item: DocItem, sorted: Seq<DocItem>)
     }
 }
 
-/// Insertion sort by kind (Spec < Proof < Exec).
+///  Insertion sort by kind (Spec < Proof < Exec).
 pub open spec fn sort_by_kind_spec(items: Seq<DocItem>) -> Seq<DocItem>
     decreases items.len(),
 {
@@ -126,7 +126,7 @@ pub open spec fn sort_by_kind_spec(items: Seq<DocItem>) -> Seq<DocItem>
     }
 }
 
-/// Insert maintaining kind-grouped order.
+///  Insert maintaining kind-grouped order.
 pub open spec fn insert_sorted_by_kind(item: DocItem, sorted: Seq<DocItem>) -> Seq<DocItem>
     decreases sorted.len(),
 {
@@ -139,7 +139,7 @@ pub open spec fn insert_sorted_by_kind(item: DocItem, sorted: Seq<DocItem>) -> S
     }
 }
 
-/// sort_by_kind_spec produces items grouped by kind.
+///  sort_by_kind_spec produces items grouped by kind.
 pub proof fn lemma_sort_by_kind_grouped(items: Seq<DocItem>)
     ensures
         items_grouped_by_kind(sort_by_kind_spec(items)),
@@ -151,7 +151,7 @@ pub proof fn lemma_sort_by_kind_grouped(items: Seq<DocItem>)
     }
 }
 
-/// Inserting preserves kind grouping.
+///  Inserting preserves kind grouping.
 pub proof fn lemma_insert_kind_preserves_grouped(item: DocItem, sorted: Seq<DocItem>)
     requires
         items_grouped_by_kind(sorted),
@@ -164,7 +164,7 @@ pub proof fn lemma_insert_kind_preserves_grouped(item: DocItem, sorted: Seq<DocI
     }
 }
 
-/// sort_by_kind_spec preserves length.
+///  sort_by_kind_spec preserves length.
 pub proof fn lemma_sort_by_kind_length(items: Seq<DocItem>)
     ensures
         sort_by_kind_spec(items).len() == items.len(),
@@ -176,7 +176,7 @@ pub proof fn lemma_sort_by_kind_length(items: Seq<DocItem>)
     }
 }
 
-/// insert_sorted_by_kind increases length by exactly 1.
+///  insert_sorted_by_kind increases length by exactly 1.
 pub proof fn lemma_insert_kind_length(item: DocItem, sorted: Seq<DocItem>)
     ensures
         insert_sorted_by_kind(item, sorted).len() == sorted.len() + 1,
@@ -187,23 +187,23 @@ pub proof fn lemma_insert_kind_length(item: DocItem, sorted: Seq<DocItem>)
     }
 }
 
-} // verus!
+} //  verus!
 
-/// Build the runtime documentation output from a list of public items.
-/// Groups by module, sorts modules alphabetically, sorts items by kind within each module.
+///  Build the runtime documentation output from a list of public items.
+///  Groups by module, sorts modules alphabetically, sorts items by kind within each module.
 pub fn build_doc_output(items: Vec<RtDocItem>) -> RtDocOutput {
     use std::collections::BTreeMap;
 
-    // Group items by module path
+    //  Group items by module path
     let mut modules: BTreeMap<String, Vec<RtDocItem>> = BTreeMap::new();
     for item in items {
         modules.entry(item.module_path.clone()).or_default().push(item);
     }
 
-    // Build sorted modules
+    //  Build sorted modules
     let mut result: Vec<RtDocModule> = Vec::new();
     for (path, mut items) in modules {
-        // Sort items: first by kind (spec, proof, exec), then by line number within kind
+        //  Sort items: first by kind (spec, proof, exec), then by line number within kind
         items.sort_by(|a, b| {
             a.kind.ord().cmp(&b.kind.ord())
                 .then(a.line_number.cmp(&b.line_number))
@@ -211,6 +211,6 @@ pub fn build_doc_output(items: Vec<RtDocItem>) -> RtDocOutput {
         result.push(RtDocModule { path, items });
     }
 
-    // BTreeMap already gives us alphabetical module order
+    //  BTreeMap already gives us alphabetical module order
     RtDocOutput { modules: result }
 }

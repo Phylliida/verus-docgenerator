@@ -101,7 +101,7 @@ fn main() {
 
     eprintln!("Extracted {} total items", all_items.len());
 
-    // Filter to public items only
+    //  Filter to public items only
     let public_items: Vec<RtDocItem> = all_items
         .into_iter()
         .filter(|item| matches!(item.visibility, RtVisibility::Public))
@@ -109,10 +109,10 @@ fn main() {
 
     eprintln!("{} public items", public_items.len());
 
-    // Group by module and sort
+    //  Group by module and sort
     let output = extraction::build_doc_output(public_items);
 
-    // Generate markdown
+    //  Generate markdown
     let md = markdown::format_doc_output(&output, &src_prefix);
 
     match std::fs::write(&output_file, &md) {
